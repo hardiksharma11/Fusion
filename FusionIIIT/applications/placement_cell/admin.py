@@ -1,96 +1,138 @@
 from django.contrib import admin
 
-from .models import (Achievement, ChairmanVisit, Coauthor, Coinventor, Course,
-                     Education, Experience, Has, Interest, MessageOfficer, Conference,
-                     NotifyStudent, Patent, PlacementRecord, PlacementSchedule,
-                     PlacementStatus, Project, Publication, Skill, Extracurricular,
-                     StudentPlacement, StudentRecord, Role, CompanyDetails, Reference)
+from .models import (
+    Achievement,
+    ChairmanVisit,
+    Coauthor,
+    Coinventor,
+    Course,
+    Education,
+    Experience,
+    Has,
+    Interest,
+    MessageOfficer,
+    Conference,
+    NotifyStudent,
+    Patent,
+    PlacementRecord,
+    PlacementSchedule,
+    PlacementStatus,
+    Project,
+    Publication,
+    Skill,
+    Extracurricular,
+    StudentPlacement,
+    StudentRecord,
+    Role,
+    CompanyDetails,
+    Reference,
+)
 
 
 # Register your models here.
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'project_name', 'project_status', 'sdate')
+    list_display = ("unique_id", "project_name", "project_status", "sdate")
 
 
 class SkillAdmin(admin.ModelAdmin):
-    fields = ['skill']
+    fields = ["skill"]
 
 
 class HasAdmin(admin.ModelAdmin):
-    list_display = ('skill_id', 'unique_id')
+    list_display = ("skill_id", "unique_id")
 
 
 class EducationAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'degree', 'institute', 'stream', 'sdate', 'edate')
+    list_display = ("unique_id", "degree", "institute", "stream", "sdate", "edate")
 
 
 class ExperienceAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'title', 'status', 'company', 'location', 'sdate', 'edate')
+    list_display = (
+        "unique_id",
+        "title",
+        "status",
+        "company",
+        "location",
+        "sdate",
+        "edate",
+    )
 
 
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'course_name', 'sdate', 'edate')
+    list_display = ("unique_id", "course_name", "sdate", "edate")
 
 
 class PublicationAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'publication_title', 'publisher', 'publication_date')
+    list_display = ("unique_id", "publication_title", "publisher", "publication_date")
 
 
 class AchievementAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'achievement', 'achievement_type', 'issuer', 'date_earned')
+    list_display = (
+        "unique_id",
+        "achievement",
+        "achievement_type",
+        "issuer",
+        "date_earned",
+    )
 
 
 class CoauthorAdmin(admin.ModelAdmin):
-    list_display = ('publication_id', 'coauthor_name')
+    list_display = ("publication_id", "coauthor_name")
 
 
 class InterestAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'interest')
+    list_display = ("unique_id", "interest")
 
 
 class PatentAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'patent_name', 'patent_office', 'patent_date')
+    list_display = ("unique_id", "patent_name", "patent_office", "patent_date")
 
 
 class CoinventorAdmin(admin.ModelAdmin):
-    list_display = ('patent_id', 'coinventor_name')
+    list_display = ("patent_id", "coinventor_name")
 
 
 class StudentPlacementAdmin(admin.ModelAdmin):
-    list_display = ('unique_id', 'debar', 'future_aspect', 'placed_type', 'placement_date',
-                    'package')
+    list_display = (
+        "unique_id",
+        "debar",
+        "future_aspect",
+        "placed_type",
+        "placement_date",
+        "package",
+    )
 
 
 class MessageOfficerAdmin(admin.ModelAdmin):
-    fields = ['timestamp']
+    fields = ["timestamp"]
 
 
 class NotifyStudentAdmin(admin.ModelAdmin):
-    list_display = ('placement_type', 'company_name', 'ctc')
+    list_display = ("placement_type", "company_name", "ctc")
 
 
 class PlacementStatusAdmin(admin.ModelAdmin):
-    list_display = ('notify_id', 'unique_id', 'placed', 'timestamp')
+    list_display = ("notify_id", "unique_id", "placed", "timestamp")
 
 
 class PlacementRecordAdmin(admin.ModelAdmin):
-    list_display = ('placement_type', 'name', 'ctc', 'year', 'test_score', 'test_type')
+    list_display = ("placement_type", "name", "ctc", "year", "test_score", "test_type")
 
 
 class StudentRecordAdmin(admin.ModelAdmin):
-    list_display = ('record_id', 'unique_id')
+    list_display = ("record_id", "unique_id")
 
 
 class ChairmanVisitAdmin(admin.ModelAdmin):
-    list_display = ('company_name', 'location', 'visiting_date', 'timestamp')
+    list_display = ("company_name", "location", "visiting_date", "timestamp")
 
 
 class PlacementScheduleAdmin(admin.ModelAdmin):
-    list_display = ('title', 'placement_date', 'location', 'time')
+    list_display = ("title", "placement_date", "location", "time")
 
 
 class ReferenceAdmin(admin.ModelAdmin):
-    list_display = ('reference_name', 'post', 'email', 'mobile_number')
+    list_display = ("reference_name", "post", "email", "mobile_number")
 
 
 admin.site.register(Project, ProjectAdmin)

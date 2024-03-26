@@ -22,19 +22,19 @@ class Building(models.Model):
         remarks: remarks for the building
         verified: tells building is verified or not
     """
-    ON_SCHEDULE = 'OS'
-    DELAYED = 'DL'
+
+    ON_SCHEDULE = "OS"
+    DELAYED = "DL"
     STATUS_CHOICES = [
-        (ON_SCHEDULE, 'On Schedule'),
-        (DELAYED, 'Delayed'),
+        (ON_SCHEDULE, "On Schedule"),
+        (DELAYED, "Delayed"),
     ]
     name = models.CharField(max_length=100)
     dateIssued = models.DateField()
     dateConstructionStarted = models.DateField(null=True, blank=True)
     dateConstructionCompleted = models.DateField(null=True, blank=True)
     dateOperational = models.DateField(null=True, blank=True)
-    status = models.CharField(
-        max_length=2, choices=STATUS_CHOICES, default=ON_SCHEDULE)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=ON_SCHEDULE)
     area = models.IntegerField(null=True, blank=True)
     constructionCostEstimated = models.IntegerField(null=True, blank=True)
     constructionCostActual = models.IntegerField(null=True, blank=True)
@@ -46,62 +46,68 @@ class Building(models.Model):
     def works(self):
         works_all = self.work_set.all()
         workList = [
-            (Work.MAINTENANCE_WORK, 'Maintenance',
-             works_all.filter(workType=Work.MAINTENANCE_WORK)),
-            (Work.CONSTRUCTION_WORK, 'Construction',
-             works_all.filter(workType=Work.CONSTRUCTION_WORK))
+            (
+                Work.MAINTENANCE_WORK,
+                "Maintenance",
+                works_all.filter(workType=Work.MAINTENANCE_WORK),
+            ),
+            (
+                Work.CONSTRUCTION_WORK,
+                "Construction",
+                works_all.filter(workType=Work.CONSTRUCTION_WORK),
+            ),
         ]
         return workList
 
     class Meta:
-        ordering = ['-id']
+        ordering = ["-id"]
 
     def __str__(self):
         return self.name
 
 
 class Work(models.Model):
-
     """
-        Tells about the works
-        @fields-
-            name: name for the work
-            workType: type of the work
-            building: in which building work is done
-            contractorName: nsme of the contractor who is doing the work
-            status: status of the work
-            dateIssued: date when the work was issued
-            dateStarted: date when work was started
-            dateCompleted: date when work was completed
-            costEstimated: estimated cost of the work
-            costActual: actual cost of the work
-            remarks: remarks for the work
-            verified: work is verified or not
+    Tells about the works
+    @fields-
+        name: name for the work
+        workType: type of the work
+        building: in which building work is done
+        contractorName: nsme of the contractor who is doing the work
+        status: status of the work
+        dateIssued: date when the work was issued
+        dateStarted: date when work was started
+        dateCompleted: date when work was completed
+        costEstimated: estimated cost of the work
+        costActual: actual cost of the work
+        remarks: remarks for the work
+        verified: work is verified or not
     """
 
-    CONSTRUCTION_WORK = 'CW'
-    MAINTENANCE_WORK = 'MW'
+    CONSTRUCTION_WORK = "CW"
+    MAINTENANCE_WORK = "MW"
     WORK_CHOICES = [
-        (CONSTRUCTION_WORK, 'Construction'),
-        (MAINTENANCE_WORK, 'Maintenance'),
+        (CONSTRUCTION_WORK, "Construction"),
+        (MAINTENANCE_WORK, "Maintenance"),
     ]
 
-    ON_SCHEDULE = 'OS'
-    DELAYED = 'DL'
+    ON_SCHEDULE = "OS"
+    DELAYED = "DL"
 
     STATUS_CHOICES = [
-        (ON_SCHEDULE, 'On Schedule'),
-        (DELAYED, 'Delayed'),
+        (ON_SCHEDULE, "On Schedule"),
+        (DELAYED, "Delayed"),
     ]
 
     name = models.CharField(max_length=100)
     workType = models.CharField(
-        max_length=2, choices=WORK_CHOICES, default=MAINTENANCE_WORK)
+        max_length=2, choices=WORK_CHOICES, default=MAINTENANCE_WORK
+    )
     building = models.ForeignKey(
-        Building, on_delete=models.CASCADE, null=True, blank=True)
+        Building, on_delete=models.CASCADE, null=True, blank=True
+    )
     contractorName = models.CharField(max_length=100)
-    status = models.CharField(
-        max_length=2, choices=STATUS_CHOICES, default=ON_SCHEDULE)
+    status = models.CharField(max_length=2, choices=STATUS_CHOICES, default=ON_SCHEDULE)
     dateIssued = models.DateField()
     dateStarted = models.DateField(null=True, blank=True)
     dateCompleted = models.DateField(null=True, blank=True)
@@ -111,7 +117,7 @@ class Work(models.Model):
     verified = models.BooleanField(default=False)
 
     class Meta:
-        ordering = ['-id']
+        ordering = ["-id"]
 
     def __str__(self):
         return self.name
@@ -119,17 +125,18 @@ class Work(models.Model):
 
 class SubWork(models.Model):
     """
-        Details about the subWork
-        @field-
-            name: name of the subWork
-            work: work under which the subWork is going
-            dateIssued: date when the subwork was issued
-            dateStarted: date when the subwork was started
-            dateCompleted: date when the subwork was completed
-            costEstimated: estimated cost of subwork
-            costActual: actual cost of subwork
-            remarks: remarks for the subWork
+    Details about the subWork
+    @field-
+        name: name of the subWork
+        work: work under which the subWork is going
+        dateIssued: date when the subwork was issued
+        dateStarted: date when the subwork was started
+        dateCompleted: date when the subwork was completed
+        costEstimated: estimated cost of subwork
+        costActual: actual cost of subwork
+        remarks: remarks for the subWork
     """
+
     name = models.CharField(max_length=100)
     work = models.ForeignKey(Work, on_delete=models.CASCADE)
     dateIssued = models.DateField()
@@ -140,22 +147,23 @@ class SubWork(models.Model):
     remarks = models.TextField(null=True, blank=True)
 
     class Meta:
-        ordering = ['-id']
+        ordering = ["-id"]
 
     def __str__(self):
-        return self.work.name + ' - ' + self.name
+        return self.work.name + " - " + self.name
 
 
 class InventoryType(models.Model):
     """
-        Details about different type of inventory
-        @fields-
-            name: name of the inventory
-            rate: rate of the item in inventory
-            manufacturer: manufacturer of the item present in inventory
-            model: model of the item present in inventory
-            remarks: remarks for the item present in inventory
+    Details about different type of inventory
+    @fields-
+        name: name of the inventory
+        rate: rate of the item in inventory
+        manufacturer: manufacturer of the item present in inventory
+        model: model of the item present in inventory
+        remarks: remarks for the item present in inventory
     """
+
     name = models.CharField(max_length=100)
     rate = models.IntegerField()
     manufacturer = models.CharField(max_length=100, null=True, blank=True)
@@ -168,22 +176,22 @@ class InventoryType(models.Model):
 
 class InventoryCommon(models.Model):
     """
-        Details about the common inventory
-        @field-
-            inventoryType: type of inventory
-            building: building where inventory is present
-            work: work associated with inventory
-            quantity: quantity of the inventory
-            dateOrdered: ordered date
-            dateRecieved: recieved date
-            remarks: remarks for the inventory
+    Details about the common inventory
+    @field-
+        inventoryType: type of inventory
+        building: building where inventory is present
+        work: work associated with inventory
+        quantity: quantity of the inventory
+        dateOrdered: ordered date
+        dateRecieved: recieved date
+        remarks: remarks for the inventory
     """
 
     inventoryType = models.ForeignKey(InventoryType, on_delete=models.CASCADE)
     building = models.ForeignKey(
-        Building, on_delete=models.CASCADE, null=True, blank=True)
-    work = models.ForeignKey(
-        Work, on_delete=models.CASCADE, null=True, blank=True)
+        Building, on_delete=models.CASCADE, null=True, blank=True
+    )
+    work = models.ForeignKey(Work, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField()
     dateOrdered = models.DateField()
     dateReceived = models.DateField(null=True, blank=True)
@@ -197,27 +205,30 @@ class InventoryCommon(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ['-id']
+        ordering = ["-id"]
 
 
 class InventoryConsumable(InventoryCommon):
     """
-        Details about consumable inventory
-        @fields-
-            presentQuantity: presentQuantity of the item present in inventory
+    Details about consumable inventory
+    @fields-
+        presentQuantity: presentQuantity of the item present in inventory
     """
+
     presentQuantity = models.IntegerField()
 
 
 class InventoryNonConsumable(InventoryCommon):
     """
-        Details about non-consumable inventory
-        @fields-
-            serial_no: serial no of inventory
-            dateLastVerified: date when inventory was last verified
-            issued_to: details about user which has consumed the inventory
+    Details about non-consumable inventory
+    @fields-
+        serial_no: serial no of inventory
+        dateLastVerified: date when inventory was last verified
+        issued_to: details about user which has consumed the inventory
     """
+
     serial_no = models.CharField(max_length=20)
     dateLastVerified = models.DateField()
     issued_to = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )

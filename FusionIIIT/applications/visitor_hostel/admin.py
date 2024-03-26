@@ -1,7 +1,14 @@
 from django.contrib import admin
 
-from .models import (Bill, BookingDetail, Inventory, InventoryBill, MealRecord,
-                     RoomDetail, VisitorDetail)
+from .models import (
+    Bill,
+    BookingDetail,
+    Inventory,
+    InventoryBill,
+    MealRecord,
+    RoomDetail,
+    VisitorDetail,
+)
 
 admin.site.register(VisitorDetail)
 admin.site.register(BookingDetail)

@@ -1,6 +1,9 @@
-
-from django.http import (Http404, HttpResponse, HttpResponseNotFound,
-                         HttpResponseRedirect)
+from django.http import (
+    Http404,
+    HttpResponse,
+    HttpResponseNotFound,
+    HttpResponseRedirect,
+)
 from django.shortcuts import render, reverse
 
 from django.contrib import messages
@@ -36,68 +39,89 @@ def financeModule(request):
     b - object of the context
     """
 
-    context = {
-    }
+    context = {}
     k = HoldsDesignation.objects.select_related().filter(working=request.user)
     flag = 0
     for z in k:
-        if(str(z.designation) == 'dealing assistant'):
+        if str(z.designation) == "dealing assistant":
             flag = 1
             b = Paymentscheme.objects.filter(view=True, senior_verify=False)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModuleds.html", context)
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModuleds.html",
+                context,
+            )
 
-        if (str(z.designation) == 'adminstrator'):
+        if str(z.designation) == "adminstrator":
             flag = 1
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulead.html", context)
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulead.html",
+                context,
+            )
 
-        if (str(z.designation) == 'sr dealing assitant'):
-            flag = 1
-            b = Paymentscheme.objects.filter(
-                senior_verify=True, view=True, ass_registrar_verify=False)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulesrda.html", context)
-
-        if (str(z.designation) == 'asst. registrar fa'):
+        if str(z.designation) == "sr dealing assitant":
             flag = 1
             b = Paymentscheme.objects.filter(
-                ass_registrar_verify=True, view=True, ass_registrar_aud_verify=False)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulearfa.html", context)
+                senior_verify=True, view=True, ass_registrar_verify=False
+            )
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulesrda.html",
+                context,
+            )
 
-        if (str(z.designation) == 'asst. registrar aud'):
+        if str(z.designation) == "asst. registrar fa":
             flag = 1
             b = Paymentscheme.objects.filter(
-                ass_registrar_aud_verify=True, view=True, registrar_director_verify=False)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/finanaceAndAccountsModulearaud.html", context)
+                ass_registrar_verify=True, view=True, ass_registrar_aud_verify=False
+            )
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulearfa.html",
+                context,
+            )
 
-        if (str(z.designation) == 'Registrar'):
+        if str(z.designation) == "asst. registrar aud":
             flag = 1
             b = Paymentscheme.objects.filter(
-                registrar_director_verify=True, view=True, )
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+                ass_registrar_aud_verify=True,
+                view=True,
+                registrar_director_verify=False,
+            )
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/finanaceAndAccountsModulearaud.html",
+                context,
+            )
 
-        if (str(z.designation) == 'Director'):
+        if str(z.designation) == "Registrar":
             flag = 1
             b = Paymentscheme.objects.filter(
-                registrar_director_verify=True, view=True)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
-    if(flag == 0):
+                registrar_director_verify=True,
+                view=True,
+            )
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModule.html",
+                context,
+            )
+
+        if str(z.designation) == "Director":
+            flag = 1
+            b = Paymentscheme.objects.filter(registrar_director_verify=True, view=True)
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModule.html",
+                context,
+            )
+    if flag == 0:
         return render(request, "financeAndAccountsModule/employee.html", context)
 
 
@@ -117,7 +141,7 @@ def previewing(request):
 
     flag = 0
     for z in k:
-        if(str(z.designation) == 'dealing assistant'):
+        if str(z.designation) == "dealing assistant":
             flag = 1
             month = request.POST.get("month")
             year = request.POST.get("number1")
@@ -140,66 +164,121 @@ def previewing(request):
             license_fee = request.POST.get("number16")
             electricity_charges = request.POST.get("number17")
             others = request.POST.get("number18")
-            gr_reduction = int(nps) + int(gpf) + int(income_tax) + int(p_tax) + int(
-                gslis) + int(gis) + int(license_fee) + int(electricity_charges) + int(others)
-            income = int(pay) + int(gr_pay) + int(da) + int(ta) + \
-                int(hra) + int(fpa) + int(special_allow)
-            net_payment = (income - gr_reduction)
+            gr_reduction = (
+                int(nps)
+                + int(gpf)
+                + int(income_tax)
+                + int(p_tax)
+                + int(gslis)
+                + int(gis)
+                + int(license_fee)
+                + int(electricity_charges)
+                + int(others)
+            )
+            income = (
+                int(pay)
+                + int(gr_pay)
+                + int(da)
+                + int(ta)
+                + int(hra)
+                + int(fpa)
+                + int(special_allow)
+            )
+            net_payment = income - gr_reduction
 
-            a = Paymentscheme(month=month, year=year, pf=pf, name=name, designation=designation, pay=pay, gr_pay=gr_pay, da=da, ta=ta, hra=hra, fpa=fpa, special_allow=special_allow, nps=nps, gpf=gpf,
-                              income_tax=income_tax, p_tax=p_tax, gslis=gslis, gis=gis, license_fee=license_fee, electricity_charges=electricity_charges, others=others, gr_reduction=gr_reduction, net_payment=net_payment)
+            a = Paymentscheme(
+                month=month,
+                year=year,
+                pf=pf,
+                name=name,
+                designation=designation,
+                pay=pay,
+                gr_pay=gr_pay,
+                da=da,
+                ta=ta,
+                hra=hra,
+                fpa=fpa,
+                special_allow=special_allow,
+                nps=nps,
+                gpf=gpf,
+                income_tax=income_tax,
+                p_tax=p_tax,
+                gslis=gslis,
+                gis=gis,
+                license_fee=license_fee,
+                electricity_charges=electricity_charges,
+                others=others,
+                gr_reduction=gr_reduction,
+                net_payment=net_payment,
+            )
             a.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModuleds.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModuleds.html",
+                context,
+            )
         # if (str(z.designation) == 'adminstrator'):
         #     flag = 1
         #     return render(request, "financeAndAccountsModule/financeAndAccountsModulead.html", context)
 
-        if (str(z.designation) == 'sr dealing assitant'):
+        if str(z.designation) == "sr dealing assitant":
             flag = 1
             b = Paymentscheme.objects.filter(
-                senior_verify=True, view=True, ass_registrar_verify=False)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulesrda.html", context)
+                senior_verify=True, view=True, ass_registrar_verify=False
+            )
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulesrda.html",
+                context,
+            )
 
-        if (str(z.designation) == 'asst. registrar fa'):
+        if str(z.designation) == "asst. registrar fa":
             flag = 1
             b = Paymentscheme.objects.filter(
-                ass_registrar_verify=True, view=True, ass_registrar_aud_verify=False)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulearfa.html", context)
+                ass_registrar_verify=True, view=True, ass_registrar_aud_verify=False
+            )
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulearfa.html",
+                context,
+            )
 
-        if (str(z.designation) == 'asst. registrar aud'):
+        if str(z.designation) == "asst. registrar aud":
             flag = 1
             b = Paymentscheme.objects.filter(
-                ass_registrar_aud_verify=True, view=True, registrar_director_verify=False)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/finanaceAndAccountsModulearaud.html", context)
+                ass_registrar_aud_verify=True,
+                view=True,
+                registrar_director_verify=False,
+            )
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/finanaceAndAccountsModulearaud.html",
+                context,
+            )
 
-        if (str(z.designation) == 'Registrar'):
+        if str(z.designation) == "Registrar":
             flag = 1
-            b = Paymentscheme.objects.filter(
-                registrar_director_verify=True, view=True)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+            b = Paymentscheme.objects.filter(registrar_director_verify=True, view=True)
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModule.html",
+                context,
+            )
 
-        if (str(z.designation) == 'director'):
+        if str(z.designation) == "director":
             flag = 1
-            b = Paymentscheme.objects.filter(
-                registrar_director_verify=True, view=True)
-            context = {
-                'b': b
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+            b = Paymentscheme.objects.filter(registrar_director_verify=True, view=True)
+            context = {"b": b}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModule.html",
+                context,
+            )
     # if(flag == 0):
     #     return render(request, "financeAndAccountsModule/employee.html", context)
 
@@ -208,22 +287,22 @@ def previewing(request):
 @login_required(login_url=LOGIN_URL)
 def verifying(request):
     """
-    This function verification of the salary slips starting from the range of the dealing assistant to sr. dealing assistant to asst. registrar FA to
-    asst. registrar aud to registrar/director
+        This function verification of the salary slips starting from the range of the dealing assistant to sr. dealing assistant to asst. registrar FA to
+        asst. registrar aud to registrar/director
 
-    @param
-    request - trivial
-officeOfRegistrar
-    @variables
-    a - object of the verifying method
-    id - primary key of the payment scheme model
+        @param
+        request - trivial
+    officeOfRegistrar
+        @variables
+        a - object of the verifying method
+        id - primary key of the payment scheme model
     """
     k = HoldsDesignation.objects.select_related().filter(working=request.user)
 
     for z in k:
         if request.method == "POST":
-            if(str(z.designation) == 'dealing assistant'):
-                a = request.POST.getlist('box')
+            if str(z.designation) == "dealing assistant":
+                a = request.POST.getlist("box")
                 pay_scheme = []
                 for i in range(len(a)):
                     if "verify" in request.POST:
@@ -235,11 +314,10 @@ officeOfRegistrar
                         p = Paymentscheme.objects.get(id=a[i])
                         p.senior_verify = False
                         pay_scheme.append(p)
-                Paymentscheme.objects.bulk_update(
-                    pay_scheme, ['senior_verify'])
+                Paymentscheme.objects.bulk_update(pay_scheme, ["senior_verify"])
 
-            if(str(z.designation) == 'sr dealing assitant'):
-                a = request.POST.getlist('box')
+            if str(z.designation) == "sr dealing assitant":
+                a = request.POST.getlist("box")
                 sr_pay_scheme = []
                 for i in range(len(a)):
                     if "verify" in request.POST:
@@ -252,10 +330,11 @@ officeOfRegistrar
                         p.senior_verify = False
                         sr_pay_scheme.append(p)
                 Paymentscheme.objects.bulk_update(
-                    sr_pay_scheme, ['senior_verify', 'ass_registrar_verify'])
+                    sr_pay_scheme, ["senior_verify", "ass_registrar_verify"]
+                )
 
-            if(str(z.designation) == 'asst. registrar fa'):
-                a = request.POST.getlist('box')
+            if str(z.designation) == "asst. registrar fa":
+                a = request.POST.getlist("box")
                 asst_pay_scheme = []
                 for i in range(len(a)):
                     if "verify" in request.POST:
@@ -268,10 +347,12 @@ officeOfRegistrar
                         p.ass_registrar_verify = False
                         asst_pay_scheme.append(p)
                 Paymentscheme.objects.bulk_update(
-                    asst_pay_scheme, ['ass_registrar_verify', 'ass_registrar_aud_verify'])
+                    asst_pay_scheme,
+                    ["ass_registrar_verify", "ass_registrar_aud_verify"],
+                )
 
-            if(str(z.designation) == 'asst. registrar aud'):
-                a = request.POST.getlist('box')
+            if str(z.designation) == "asst. registrar aud":
+                a = request.POST.getlist("box")
                 aud_pay_scheme = []
                 for i in range(len(a)):
                     if "verify" in request.POST:
@@ -284,10 +365,12 @@ officeOfRegistrar
                         p.ass_registrar_aud_verify = False
                         aud_pay_scheme.append(p)
                 Paymentscheme.objects.bulk_update(
-                    aud_pay_scheme, ['registrar_director_verify', 'ass_registrar_aud_verify'])
+                    aud_pay_scheme,
+                    ["registrar_director_verify", "ass_registrar_aud_verify"],
+                )
 
-            if(str(z.designation) == 'Registrar'):
-                a = request.POST.getlist('box')
+            if str(z.designation) == "Registrar":
+                a = request.POST.getlist("box")
                 reg_pay_scheme = []
                 for i in range(len(a)):
                     if "verify" in request.POST:
@@ -302,10 +385,11 @@ officeOfRegistrar
                         p.view = True
                         reg_pay_scheme.append(p)
                 Paymentscheme.objects.bulk_update(
-                    reg_pay_scheme, ['runpayroll', 'view', 'registrar_director_verify'])
+                    reg_pay_scheme, ["runpayroll", "view", "registrar_director_verify"]
+                )
 
-            if(str(z.designation) == 'director'):
-                a = request.POST.getlist('box')
+            if str(z.designation) == "director":
+                a = request.POST.getlist("box")
                 dir_pay_scheme = []
                 for i in range(len(a)):
                     if "verify" in request.POST:
@@ -320,7 +404,8 @@ officeOfRegistrar
                         p.view = True
                         dir_pay_scheme.append(p)
                 Paymentscheme.objects.bulk_update(
-                    dir_pay_scheme, ['view', 'runpayroll', 'registrar_director_verify'])
+                    dir_pay_scheme, ["view", "runpayroll", "registrar_director_verify"]
+                )
 
     return HttpResponseRedirect("/finance/finance/")
 
@@ -329,86 +414,94 @@ officeOfRegistrar
 @login_required(login_url=LOGIN_URL)
 def previous(request):
     """
-        This method is used to view the already executed payroll run the registrar, and this method will take the input of the month and year which generates
-        the entire payments of the employee of particular month and year
+    This method is used to view the already executed payroll run the registrar, and this method will take the input of the month and year which generates
+    the entire payments of the employee of particular month and year
 
-        @param
-        request - trivial
+    @param
+    request - trivial
 
-        @variables
-        a,b - these are taken as inout variables of month and year respectively for the display of the corresponding month's payments
+    @variables
+    a,b - these are taken as inout variables of month and year respectively for the display of the corresponding month's payments
     """
     k = HoldsDesignation.objects.select_related().filter(working=request.user)
 
     for z in k:
         if request.method == "POST":
-            if(str(z.designation) == 'dealing assistant'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "dealing assistant":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
 
-                c = Paymentscheme.objects.filter(
-                    month=a, year=b, runpayroll=True)
+                c = Paymentscheme.objects.filter(month=a, year=b, runpayroll=True)
                 context = {
-                    'c': c,
-
+                    "c": c,
                 }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModuleds.html", context)
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModuleds.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'sr dealing assitant'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "sr dealing assitant":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
 
-                c = Paymentscheme.objects.filter(
-                    month=a, year=b, runpayroll=True)
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModulesrda.html", context)
+                c = Paymentscheme.objects.filter(month=a, year=b, runpayroll=True)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModulesrda.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'asst. registrar fa'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "asst. registrar fa":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
 
-                c = Paymentscheme.objects.filter(
-                    month=a, year=b, runpayroll=True)
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModulearfa.html", context)
+                c = Paymentscheme.objects.filter(month=a, year=b, runpayroll=True)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModulearfa.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'asst. registrar aud'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "asst. registrar aud":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
 
-                c = Paymentscheme.objects.filter(
-                    month=a, year=b, runpayroll=True)
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/finanaceAndAccountsModulearaud.html", context)
+                c = Paymentscheme.objects.filter(month=a, year=b, runpayroll=True)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/finanaceAndAccountsModulearaud.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'Registrar'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "Registrar":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
 
-                c = Paymentscheme.objects.filter(
-                    month=a, year=b, runpayroll=True)
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+                c = Paymentscheme.objects.filter(month=a, year=b, runpayroll=True)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModule.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'director'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "director":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
 
-                c = Paymentscheme.objects.filter(
-                    month=a, year=b, runpayroll=True)
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+                c = Paymentscheme.objects.filter(month=a, year=b, runpayroll=True)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModule.html",
+                    context,
+                )
     return HttpResponseRedirect("/finance/finance/")
+
 
 # making login mandatory to access this view
 
@@ -416,72 +509,105 @@ def previous(request):
 @login_required(login_url=LOGIN_URL)
 def createPayments(request):
     """
-        This method is used to create a new payement transaction by the Assistant Registrar(fa), Registrar, Assistant Registrar(aud).
+    This method is used to create a new payement transaction by the Assistant Registrar(fa), Registrar, Assistant Registrar(aud).
 
-        @param
-        request - trivial
+    @param
+    request - trivial
 
-        @variables
-        Basic details of a new payement transaction.
+    @variables
+    Basic details of a new payement transaction.
     """
     k = HoldsDesignation.objects.select_related().filter(working=request.user)
 
     for z in k:
-        if(str(z.designation) == "asst. registrar fa"):
+        if str(z.designation) == "asst. registrar fa":
             t_id = request.POST.get("t_id")
             toWhom = request.POST.get("toWhom")
             fromWhom = request.POST.get("fromWhom")
             purpose = request.POST.get("purpose")
             date = request.POST.get("date")
 
-            p = Payments(TransactionId=t_id, ToWhom=toWhom,
-                         FromWhom=fromWhom, Purpose=purpose, Date=date)
+            p = Payments(
+                TransactionId=t_id,
+                ToWhom=toWhom,
+                FromWhom=fromWhom,
+                Purpose=purpose,
+                Date=date,
+            )
             p.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulearfa.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulearfa.html",
+                context,
+            )
 
-        if(str(z.designation) == "asst. registrar aud"):
+        if str(z.designation) == "asst. registrar aud":
             t_id = request.POST.get("t_id")
             toWhom = request.POST.get("toWhom")
             fromWhom = request.POST.get("fromWhom")
             purpose = request.POST.get("purpose")
             date = request.POST.get("date")
 
-            p = Payments(TransactionId=t_id, ToWhom=toWhom,
-                         FromWhom=fromWhom, Purpose=purpose, Date=date)
+            p = Payments(
+                TransactionId=t_id,
+                ToWhom=toWhom,
+                FromWhom=fromWhom,
+                Purpose=purpose,
+                Date=date,
+            )
             p.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulearaud.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulearaud.html",
+                context,
+            )
 
-        if(str(z.designation) == "Registrar"):
+        if str(z.designation) == "Registrar":
             t_id = request.POST.get("t_id")
             toWhom = request.POST.get("toWhom")
             fromWhom = request.POST.get("fromWhom")
             purpose = request.POST.get("purpose")
             date = request.POST.get("date")
 
-            p = Payments(TransactionId=t_id, ToWhom=toWhom,
-                         FromWhom=fromWhom, Purpose=purpose, Date=date)
+            p = Payments(
+                TransactionId=t_id,
+                ToWhom=toWhom,
+                FromWhom=fromWhom,
+                Purpose=purpose,
+                Date=date,
+            )
             p.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModule.html",
+                context,
+            )
 
-        if(str(z.designation) == "director"):
+        if str(z.designation) == "director":
             t_id = request.POST.get("t_id")
             toWhom = request.POST.get("toWhom")
             fromWhom = request.POST.get("fromWhom")
             purpose = request.POST.get("purpose")
             date = request.POST.get("date")
 
-            p = Payments(TransactionId=t_id, ToWhom=toWhom,
-                         FromWhom=fromWhom, Purpose=purpose, Date=date)
+            p = Payments(
+                TransactionId=t_id,
+                ToWhom=toWhom,
+                FromWhom=fromWhom,
+                Purpose=purpose,
+                Date=date,
+            )
             p.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModule.html",
+                context,
+            )
+
 
 # Function to get month number
 # making login mandatory to access this view
@@ -501,7 +627,7 @@ def getMonth(i):
         "september": 9,
         "october": 10,
         "november": 11,
-        "december": 12
+        "december": 12,
     }
 
     return month.get(i, -1)
@@ -511,64 +637,73 @@ def getMonth(i):
 @login_required(login_url=LOGIN_URL)
 def previousPayments(request):
     """
-        This method is used to view the already created payement transaction, and this method will take the input of the month and year which generates
-        the entire payments of particular month and year, made by the concerned authorities.
+    This method is used to view the already created payement transaction, and this method will take the input of the month and year which generates
+    the entire payments of particular month and year, made by the concerned authorities.
 
-        @param
-        request - trivial
+    @param
+    request - trivial
 
-        @variables
-        a,b - these are taken as inout variables of month and year respectively for the display of the corresponding month's payments.
+    @variables
+    a,b - these are taken as inout variables of month and year respectively for the display of the corresponding month's payments.
     """
     k = HoldsDesignation.objects.select_related().filter(working=request.user)
 
     for z in k:
         if request.method == "POST":
-            if(str(z.designation) == 'asst. registrar fa'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "asst. registrar fa":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
                 month_no = getMonth(a)
 
                 c = Payments.objects.filter(Date__month=month_no, Date__year=b)
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModulearfa.html", context)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModulearfa.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'asst. registrar aud'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "asst. registrar aud":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
                 month_no = getMonth(a)
 
                 c = Payments.objects.filter(Date__month=month_no, Date__year=b)
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/finanaceAndAccountsModulearaud.html", context)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/finanaceAndAccountsModulearaud.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'Registrar'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "Registrar":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
                 month_no = getMonth(a)
 
                 c = Payments.objects.filter(Date__month=month_no, Date__year=b)
 
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModule.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'director'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "director":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
                 month_no = getMonth(a)
 
                 c = Payments.objects.filter(Date__month=month_no, Date__year=b)
-                context = {
-                    'c': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+                context = {"c": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModule.html",
+                    context,
+                )
     return HttpResponseRedirect("/finance/finance/")
+
 
 # making login mandatory to access this view
 
@@ -576,72 +711,105 @@ def previousPayments(request):
 @login_required(login_url=LOGIN_URL)
 def createReceipts(request):
     """
-        This method is used to create a receipt of a new transaction by the Assistant Registrar(fa), Registrar, Assistant Registrar(aud).
+    This method is used to create a receipt of a new transaction by the Assistant Registrar(fa), Registrar, Assistant Registrar(aud).
 
-        @param
-        request - trivial
+    @param
+    request - trivial
 
-        @variables
-        Basic details of a new payement transaction for generating receipts.
+    @variables
+    Basic details of a new payement transaction for generating receipts.
     """
     k = HoldsDesignation.objects.select_related().filter(working=request.user)
 
     for z in k:
-        if(str(z.designation) == "asst. registrar fa"):
+        if str(z.designation) == "asst. registrar fa":
             t_id = request.POST.get("t_id")
             toWhom = request.POST.get("toWhom")
             fromWhom = request.POST.get("fromWhom")
             purpose = request.POST.get("purpose")
             date = request.POST.get("date")
 
-            p = Receipts(TransactionId=t_id, ToWhom=toWhom,
-                         FromWhom=fromWhom, Purpose=purpose, Date=date)
+            p = Receipts(
+                TransactionId=t_id,
+                ToWhom=toWhom,
+                FromWhom=fromWhom,
+                Purpose=purpose,
+                Date=date,
+            )
             p.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulearfa.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulearfa.html",
+                context,
+            )
 
-        if(str(z.designation) == "asst. registrar aud"):
+        if str(z.designation) == "asst. registrar aud":
             t_id = request.POST.get("t_id")
             toWhom = request.POST.get("toWhom")
             fromWhom = request.POST.get("fromWhom")
             purpose = request.POST.get("purpose")
             date = request.POST.get("date")
 
-            p = Receipts(TransactionId=t_id, ToWhom=toWhom,
-                         FromWhom=fromWhom, Purpose=purpose, Date=date)
+            p = Receipts(
+                TransactionId=t_id,
+                ToWhom=toWhom,
+                FromWhom=fromWhom,
+                Purpose=purpose,
+                Date=date,
+            )
             p.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModulearaud.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModulearaud.html",
+                context,
+            )
 
-        if(str(z.designation) == "Registrar"):
+        if str(z.designation) == "Registrar":
             t_id = request.POST.get("t_id")
             toWhom = request.POST.get("toWhom")
             fromWhom = request.POST.get("fromWhom")
             purpose = request.POST.get("purpose")
             date = request.POST.get("date")
 
-            p = Receipts(TransactionId=t_id, ToWhom=toWhom,
-                         FromWhom=fromWhom, Purpose=purpose, Date=date)
+            p = Receipts(
+                TransactionId=t_id,
+                ToWhom=toWhom,
+                FromWhom=fromWhom,
+                Purpose=purpose,
+                Date=date,
+            )
             p.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModule.html",
+                context,
+            )
 
-        if(str(z.designation) == "director"):
+        if str(z.designation) == "director":
             t_id = request.POST.get("t_id")
             toWhom = request.POST.get("toWhom")
             fromWhom = request.POST.get("fromWhom")
             purpose = request.POST.get("purpose")
             date = request.POST.get("date")
 
-            p = Receipts(TransactionId=t_id, ToWhom=toWhom,
-                         FromWhom=fromWhom, Purpose=purpose, Date=date)
+            p = Receipts(
+                TransactionId=t_id,
+                ToWhom=toWhom,
+                FromWhom=fromWhom,
+                Purpose=purpose,
+                Date=date,
+            )
             p.save()
-            context = {
-            }
-            return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+            context = {}
+            return render(
+                request,
+                "financeAndAccountsModule/financeAndAccountsModule.html",
+                context,
+            )
+
 
 # making login mandatory to access this view
 
@@ -649,63 +817,72 @@ def createReceipts(request):
 @login_required(login_url=LOGIN_URL)
 def previousReceipts(request):
     """
-        This method is used to view Receipts of already created payement transaction, and this method will take the input of the month and year which generates
-        the entire payments of particular month and year, made by the concerned authorities.
+    This method is used to view Receipts of already created payement transaction, and this method will take the input of the month and year which generates
+    the entire payments of particular month and year, made by the concerned authorities.
 
-        @param
-        request - trivial
+    @param
+    request - trivial
 
-        @variables
-        a,b - these are taken as inout variables of month and year respectively for the display of the corresponding month's payment recei.
+    @variables
+    a,b - these are taken as inout variables of month and year respectively for the display of the corresponding month's payment recei.
     """
     k = HoldsDesignation.objects.select_related().filter(working=request.user)
 
     for z in k:
         if request.method == "POST":
-            if(str(z.designation) == 'asst. registrar fa'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "asst. registrar fa":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
                 month_no = getMonth(a)
 
                 c = Receipts.objects.filter(Date__month=month_no, Date__year=b)
-                context = {
-                    'x': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModulearfa.html", context)
+                context = {"x": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModulearfa.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'asst. registrar aud'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "asst. registrar aud":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
                 month_no = getMonth(a)
 
                 c = Receipts.objects.filter(Date__month=month_no, Date__year=b)
-                context = {
-                    'x': c
-                }
-                return render(request, "financeAndAccountsModule/finanaceAndAccountsModulearaud.html", context)
+                context = {"x": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/finanaceAndAccountsModulearaud.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'Registrar'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "Registrar":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
                 month_no = getMonth(a)
 
                 c = Receipts.objects.filter(Date__month=month_no, Date__year=b)
-                context = {
-                    'x': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+                context = {"x": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModule.html",
+                    context,
+                )
 
-            if(str(z.designation) == 'director'):
-                a = request.POST.get('selectmonth')
-                b = request.POST.get('selectyear')
+            if str(z.designation) == "director":
+                a = request.POST.get("selectmonth")
+                b = request.POST.get("selectyear")
                 month_no = getMonth(a)
 
                 c = Receipts.objects.filter(Date__month=month_no, Date__year=b)
-                context = {
-                    'x': c
-                }
-                return render(request, "financeAndAccountsModule/financeAndAccountsModule.html", context)
+                context = {"x": c}
+                return render(
+                    request,
+                    "financeAndAccountsModule/financeAndAccountsModule.html",
+                    context,
+                )
     return HttpResponseRedirect("/finance/finance/")
+
 
 # making login mandatory to access this view
 
@@ -713,28 +890,32 @@ def previousReceipts(request):
 @login_required(login_url=LOGIN_URL)
 def createBank(request):
     """
-        This method is used to create a new Bank Branch by the Administrator.
+    This method is used to create a new Bank Branch by the Administrator.
 
-        @param
-        request - trivial
+    @param
+    request - trivial
 
-        @variables
-        Basic details of a new bank Branch.
+    @variables
+    Basic details of a new bank Branch.
     """
     k = HoldsDesignation.objects.select_related().filter(
-        working=request.user, designation=Designation.objects.get(name='adminstrator'))
+        working=request.user, designation=Designation.objects.get(name="adminstrator")
+    )
 
     acc_no = request.POST.get("acc_no")
     bank_Name = request.POST.get("bank_name")
     IFSC_code = request.POST.get("IFSC_code")
     branch = request.POST.get("branch")
 
-    p = Bank(Account_no=acc_no, Bank_Name=bank_Name,
-             IFSC_Code=IFSC_code, Branch_Name=branch)
+    p = Bank(
+        Account_no=acc_no, Bank_Name=bank_Name, IFSC_Code=IFSC_code, Branch_Name=branch
+    )
     p.save()
-    context = {
-    }
-    return render(request, "financeAndAccountsModule/financeAndAccountsModulead.html", context)
+    context = {}
+    return render(
+        request, "financeAndAccountsModule/financeAndAccountsModulead.html", context
+    )
+
 
 # making login mandatory to access this view
 
@@ -742,16 +923,17 @@ def createBank(request):
 @login_required(login_url=LOGIN_URL)
 def createCompany(request):
     """
-        This method is used to create a new Company by the Administrator.
+    This method is used to create a new Company by the Administrator.
 
-        @param
-        request - trivial
+    @param
+    request - trivial
 
-        @variables
-        Basic details of a new Company.
+    @variables
+    Basic details of a new Company.
     """
     k = HoldsDesignation.objects.select_related().filter(
-        working=request.user, designation=Designation.objects.get(name='adminstrator'))
+        working=request.user, designation=Designation.objects.get(name="adminstrator")
+    )
 
     c_name = request.POST.get("c_name")
     start_date = request.POST.get("start_date")
@@ -759,12 +941,19 @@ def createCompany(request):
     description = request.POST.get("description")
     status = request.POST.get("status")
 
-    p = Company(Company_Name=c_name, Start_Date=start_date,
-                End_Date=end_date, Description=description, Status=status)
+    p = Company(
+        Company_Name=c_name,
+        Start_Date=start_date,
+        End_Date=end_date,
+        Description=description,
+        Status=status,
+    )
     p.save()
-    context = {
-    }
-    return render(request, "financeAndAccountsModule/financeAndAccountsModulead.html", context)
+    context = {}
+    return render(
+        request, "financeAndAccountsModule/financeAndAccountsModulead.html", context
+    )
+
 
 # def alterBank(request):
 #     """
@@ -841,25 +1030,26 @@ def createCompany(request):
 @login_required(login_url=LOGIN_URL)
 def printSalary(request):
     """
-      This method is used to print the salary details of an employee by the Administrator.
+    This method is used to print the salary details of an employee by the Administrator.
 
-      @param
-      request - trivial
+    @param
+    request - trivial
 
-      @variables
-      Basic details of an employee's salary including basic pay, ta, da, hra, nps etc.
+    @variables
+    Basic details of an employee's salary including basic pay, ta, da, hra, nps etc.
 
     """
 
     k = HoldsDesignation.objects.select_related().filter(
-        working=request.user, designation=Designation.objects.get(name='adminstrator'))
+        working=request.user, designation=Designation.objects.get(name="adminstrator")
+    )
 
     month = request.POST.get("month")
     year = request.POST.get("year")
 
     c = Paymentscheme.objects.filter(month=month, year=year)
     context = {
-        'c': c,
+        "c": c,
     }
 
-    return Render.render('financeAndAccountsModule/payroll_content4.html', context)
+    return Render.render("financeAndAccountsModule/payroll_content4.html", context)

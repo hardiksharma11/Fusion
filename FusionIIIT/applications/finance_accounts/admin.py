@@ -9,6 +9,4 @@ admin.site.register(Bank)
 admin.site.register(Company)
 
 
-
-
 # Register your models here.

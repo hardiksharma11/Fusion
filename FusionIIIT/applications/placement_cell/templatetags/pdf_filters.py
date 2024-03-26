@@ -6,6 +6,7 @@ from django import template
 
 register = template.Library()
 
+
 @register.filter
 def get64(url):
     """
@@ -13,6 +14,6 @@ def get64(url):
     """
     if url.startswith("http"):
         image = io.StringIO(urllib.urlopen(url).read())
-        return 'data:image/jpg;base64,' + base64.b64encode(image.read())
+        return "data:image/jpg;base64," + base64.b64encode(image.read())
 
     return url

@@ -6,20 +6,22 @@ from applications.globals.models import HoldsDesignation, Designation
 
 from .models import LeaveMigration, LeaveRequest, LeavesCount
 
+
 def get_designation(user):
-    desig = list(HoldsDesignation.objects.all().filter(working = user).values_list('designation'))
+    desig = list(
+        HoldsDesignation.objects.all().filter(working=user).values_list("designation")
+    )
     b = [i for sub in desig for i in sub]
-    c=str(Designation.objects.get(id=b[0]))
+    c = str(Designation.objects.get(id=b[0]))
     for i in b:
-        if str(Designation.objects.get(id=i))=='Assistant Registrar':
-            c='Assistant Registrar'
+        if str(Designation.objects.get(id=i)) == "Assistant Registrar":
+            c = "Assistant Registrar"
             break
     print(c)
     return c
 
 
 def get_user_choices(user):
-
     """
 
     # This Hacky way is to avoid an unrecognized error caused by following code:
@@ -44,18 +46,21 @@ def get_user_choices(user):
         USER_CHOICES = []
 
     if not error:
-        USER_CHOICES = [(usr.username, "{} {}".format(usr.first_name, usr.last_name))
-                        for usr in User.objects.filter(
-                        ~Q(username=user.username),
-                        Q(extrainfo__user_type=user_type))]
+        USER_CHOICES = [
+            (usr.username, "{} {}".format(usr.first_name, usr.last_name))
+            for usr in User.objects.filter(
+                ~Q(username=user.username), Q(extrainfo__user_type=user_type)
+            )
+        ]
 
     return USER_CHOICES
 
 
 def get_special_leave_count(start, end, leave_name):
-    #from applications.academic_information.models import Holiday
-    #special_holidays = Holiday.objects.filter(holiday_name=leave_name)
+    # from applications.academic_information.models import Holiday
+    # special_holidays = Holiday.objects.filter(holiday_name=leave_name)
     from applications.leave.models import RestrictedHoliday
+
     special_holidays = RestrictedHoliday.objects.all()
     count = 0.0
     while start <= end:
@@ -65,18 +70,21 @@ def get_special_leave_count(start, end, leave_name):
         start = start + datetime.timedelta(days=1)
     return count
 
-#def date_range(start, end):
+
+# def date_range(start, end):
 #    r = (end+datetime.timedelta(days=1)-start).days
 #    return [start+datetime.timedelta(days=i) for i in range(r)]
 
-def get_vacation_leave_count(start,end,leave_name):
-    #win_start = datetime.date(2018,12,1)
-    #win_end = datetime.date(2018,12,31)
-    #vacation_winter=date_range(win_start,win_end)
-    #sum_start = datetime.date(2019,5,1)
-    #sum_end = datetime.date(2019,7,31)
-    #vacation_summer = date_range(sum_start,sum_end)
+
+def get_vacation_leave_count(start, end, leave_name):
+    # win_start = datetime.date(2018,12,1)
+    # win_end = datetime.date(2018,12,31)
+    # vacation_winter=date_range(win_start,win_end)
+    # sum_start = datetime.date(2019,5,1)
+    # sum_end = datetime.date(2019,7,31)
+    # vacation_summer = date_range(sum_start,sum_end)
     from applications.leave.models import VacationHoliday
+
     vacation_holidays = VacationHoliday.objects.all()
     count = 0.0
     while start <= end:
@@ -94,9 +102,9 @@ def get_leave_days(start, end, leave_type, start_half, end_half):
     # TODO: Remove this hard code and make it database dependent
     # Maybe add one field in leave type, which tells that this has to be taken from
     # academic calendar
-    if leave_name.lower()=='restricted':
+    if leave_name.lower() == "restricted":
         count = get_special_leave_count(start, end, leave_name.lower())
-    elif leave_name.lower()=='vacation':
+    elif leave_name.lower() == "vacation":
         count = get_vacation_leave_count(start, end, leave_name.lower())
     else:
         while start <= end:
@@ -122,11 +130,16 @@ def get_leaves(leave, check):
     mapping = dict()
     if check:
         for segment in leave.segments_offline.all():
-            #if segment.leave_type.is_station:
+            # if segment.leave_type.is_station:
             #    continue
 
-            count = get_leave_days(segment.start_date, segment.end_date, segment.leave_type,
-                                   segment.start_half, segment.end_half)
+            count = get_leave_days(
+                segment.start_date,
+                segment.end_date,
+                segment.leave_type,
+                segment.start_half,
+                segment.end_half,
+            )
             if segment in mapping.keys():
                 mapping[segment] += count
             else:
@@ -135,17 +148,23 @@ def get_leaves(leave, check):
         return mapping
     else:
         for segment in leave.segments.all():
-            #if segment.leave_type.is_station:
+            # if segment.leave_type.is_station:
             #    continue
 
-            count = get_leave_days(segment.start_date, segment.end_date, segment.leave_type,
-                                   segment.start_half, segment.end_half)
+            count = get_leave_days(
+                segment.start_date,
+                segment.end_date,
+                segment.leave_type,
+                segment.start_half,
+                segment.end_half,
+            )
             if segment in mapping.keys():
                 mapping[segment] += count
             else:
                 mapping[segment] = count
 
         return mapping
+
 
 def get_leaves_restore(leave):
     """
@@ -154,13 +173,18 @@ def get_leaves_restore(leave):
     of days of leaves of that particular leave type.
     """
     mapping = dict()
-    
+
     for segment in leave.segments.all():
-        #if segment.leave_type.is_station:
+        # if segment.leave_type.is_station:
         #    continue
 
-        count = get_leave_days(segment.start_date, segment.end_date, segment.leave_type,
-                                   segment.start_half, segment.end_half)
+        count = get_leave_days(
+            segment.start_date,
+            segment.end_date,
+            segment.leave_type,
+            segment.start_half,
+            segment.end_half,
+        )
         if segment in mapping.keys():
             mapping[segment] += count
         else:
@@ -173,21 +197,30 @@ def restore_leave_balance(leave):
     to_restore = get_leaves_restore(leave)
     for key, value in to_restore.items():
         try:
-            if key.leave_type == 'Vacation':
-                count = LeavesCount.objects.get(user=leave.applicant, leave_type=key.leave_type,
-                                                year=key.start_date.year)
-                #count.remaining_leaves += value / 2
+            if key.leave_type == "Vacation":
+                count = LeavesCount.objects.get(
+                    user=leave.applicant,
+                    leave_type=key.leave_type,
+                    year=key.start_date.year,
+                )
+                # count.remaining_leaves += value / 2
                 count.remaining_leaves += value
                 count.save()
-            elif key.leave_type == 'Earned':
-                count = LeavesCount.objects.get(user=leave.applicant, leave_type=key.leave_type,
-                                                year=key.start_date.year)
-                #count.remaining_leaves += 2.0 * value
+            elif key.leave_type == "Earned":
+                count = LeavesCount.objects.get(
+                    user=leave.applicant,
+                    leave_type=key.leave_type,
+                    year=key.start_date.year,
+                )
+                # count.remaining_leaves += 2.0 * value
                 count.remaining_leaves += value
                 count.save()
             else:
-                count = LeavesCount.objects.get(user=leave.applicant, leave_type=key.leave_type,
-                                        year=key.start_date.year)
+                count = LeavesCount.objects.get(
+                    user=leave.applicant,
+                    leave_type=key.leave_type,
+                    year=key.start_date.year,
+                )
                 count.remaining_leaves += value
                 count.save()
         except:
@@ -211,26 +244,35 @@ def restore_leave_balance(leave):
             pass"""
 
 
-def deduct_leave_balance(leave,check):
-    to_deduct = get_leaves(leave,check)
+def deduct_leave_balance(leave, check):
+    to_deduct = get_leaves(leave, check)
     for key, value in to_deduct.items():
-        
+
         try:
-            if key.leave_type == 'Vacation':
-                count = LeavesCount.objects.get(user=leave.applicant, leave_type=key.leave_type,
-                                                year=key.start_date.year)
-                #count.remaining_leaves -= value / 2
+            if key.leave_type == "Vacation":
+                count = LeavesCount.objects.get(
+                    user=leave.applicant,
+                    leave_type=key.leave_type,
+                    year=key.start_date.year,
+                )
+                # count.remaining_leaves -= value / 2
                 count.remaining_leaves -= value
                 count.save()
-            elif key.leave_type == 'Earned':
-                count = LeavesCount.objects.get(user=leave.applicant, leave_type=key.leave_type,
-                                                year=key.start_date.year)
-                #count.remaining_leaves -= 2.0 * value
+            elif key.leave_type == "Earned":
+                count = LeavesCount.objects.get(
+                    user=leave.applicant,
+                    leave_type=key.leave_type,
+                    year=key.start_date.year,
+                )
+                # count.remaining_leaves -= 2.0 * value
                 count.remaining_leaves -= value
                 count.save()
             else:
-                count = LeavesCount.objects.get(user=leave.applicant, leave_type=key.leave_type,
-                                        year=key.start_date.year)
+                count = LeavesCount.objects.get(
+                    user=leave.applicant,
+                    leave_type=key.leave_type,
+                    year=key.start_date.year,
+                )
                 count.remaining_leaves -= value
                 count.save()
         except:
@@ -239,7 +281,9 @@ def deduct_leave_balance(leave,check):
 
 def get_pending_leave_requests(user):
     users = list(x.user for x in user.current_designation.all())
-    requests = LeaveRequest.objects.filter(Q(requested_from__in=users), Q(status='pending'))
+    requests = LeaveRequest.objects.filter(
+        Q(requested_from__in=users), Q(status="pending")
+    )
     return requests
 
 
@@ -253,19 +297,19 @@ def create_migrations(leave):
     for rep_segment in leave.replace_segments.all():
         mig_transfer = LeaveMigration(
             leave=leave,
-            type_migration='transfer',
+            type_migration="transfer",
             on_date=rep_segment.start_date,
             replacee=applicant,
             replacer=rep_segment.replacer,
-            replacement_type=rep_segment.replacement_type
+            replacement_type=rep_segment.replacement_type,
         )
         mig_revert = LeaveMigration(
             leave=leave,
-            type_migration='revert',
+            type_migration="revert",
             on_date=rep_segment.end_date + datetime.timedelta(days=1),
             replacee=applicant,
             replacer=rep_segment.replacer,
-            replacement_type=rep_segment.replacement_type
+            replacement_type=rep_segment.replacement_type,
         )
 
         migrations += [mig_transfer, mig_revert]

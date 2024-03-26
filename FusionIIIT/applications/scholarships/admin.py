@@ -1,9 +1,18 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import (Award_and_scholarship, Director_gold, Director_silver,
-                     Mcm, Notional_prize, Previous_winner, Proficiency_dm,
-                     Release,Notification,Application)
+from .models import (
+    Award_and_scholarship,
+    Director_gold,
+    Director_silver,
+    Mcm,
+    Notional_prize,
+    Previous_winner,
+    Proficiency_dm,
+    Release,
+    Notification,
+    Application,
+)
 
 admin.site.register(Mcm),
 admin.site.register(Award_and_scholarship),

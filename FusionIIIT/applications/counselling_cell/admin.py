@@ -10,9 +10,8 @@ from .models import (
     FacultyCounsellingTeam,
     StudentCounsellingInfo,
     StudentCounsellingTeam,
-    StudentMeetingRequest
+    StudentMeetingRequest,
 )
-
 
 
 admin.site.register(CounsellingFAQ)

@@ -1,16 +1,38 @@
 from django.contrib import admin
 
-from .models import (BranchChange, CoursesMtech, FeePayments, FinalRegistration, InitialRegistration,StudentRegistrationChecks,
-                     MinimumCredits, Register, Thesis, CourseRequested,
-                     ThesisTopicProcess, FeePayment, TeachingCreditRegistration,
-                     SemesterMarks, MarkSubmissionCheck,Dues,MTechGraduateSeminarReport,PhDProgressExamination,AssistantshipClaim,MessDue,Assistantship_status, course_registration)
+from .models import (
+    BranchChange,
+    CoursesMtech,
+    FeePayments,
+    FinalRegistration,
+    InitialRegistration,
+    StudentRegistrationChecks,
+    MinimumCredits,
+    Register,
+    Thesis,
+    CourseRequested,
+    ThesisTopicProcess,
+    FeePayment,
+    TeachingCreditRegistration,
+    SemesterMarks,
+    MarkSubmissionCheck,
+    Dues,
+    MTechGraduateSeminarReport,
+    PhDProgressExamination,
+    AssistantshipClaim,
+    MessDue,
+    Assistantship_status,
+    course_registration,
+)
+
 
 class RegisterAdmin(admin.ModelAdmin):
     model = Register
-    search_fields = ('curr_id__course_code',)
+    search_fields = ("curr_id__course_code",)
+
 
 admin.site.register(Thesis)
-admin.site.register(Register,RegisterAdmin)
+admin.site.register(Register, RegisterAdmin)
 admin.site.register(BranchChange)
 admin.site.register(CoursesMtech)
 admin.site.register(MinimumCredits)

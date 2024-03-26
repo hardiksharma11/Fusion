@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class LibraryConfig(AppConfig):
-    name = 'applications.library'
+    name = "applications.library"

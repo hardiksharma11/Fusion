@@ -7,20 +7,20 @@ from applications.globals.models import ExtraInfo
 
 class Constants:
     DAYS_OF_WEEK = (
-        (0, 'Monday'),
-        (1, 'Tuesday'),
-        (2, 'Wednesday'),
-        (3, 'Thursday'),
-        (4, 'Friday'),
-        (5, 'Saturday'),
-        (6, 'Sunday')
+        (0, "Monday"),
+        (1, "Tuesday"),
+        (2, "Wednesday"),
+        (3, "Thursday"),
+        (4, "Friday"),
+        (5, "Saturday"),
+        (6, "Sunday"),
     )
-    
-    NAME_OF_DOCTOR = (
-        (0, 'Dr.Sharma'),
-        (1, 'Dr.Vinay'),
 
+    NAME_OF_DOCTOR = (
+        (0, "Dr.Sharma"),
+        (1, "Dr.Vinay"),
     )
+
 
 class Doctor(models.Model):
     doctor_name = models.IntegerField(choices=Constants.NAME_OF_DOCTOR)
@@ -31,10 +31,15 @@ class Doctor(models.Model):
     def __str__(self):
         return self.doctor_name
 
+
 class Complaint(models.Model):
-    user_id = models.ForeignKey(ExtraInfo,on_delete=models.CASCADE)
-    feedback = models.CharField(max_length=100, null=True, blank=False)                          #This is the feedback given by the compounder
-    complaint = models.CharField(max_length=100, null=True, blank=False)                         #Here Complaint given by user cannot be NULL!
+    user_id = models.ForeignKey(ExtraInfo, on_delete=models.CASCADE)
+    feedback = models.CharField(
+        max_length=100, null=True, blank=False
+    )  # This is the feedback given by the compounder
+    complaint = models.CharField(
+        max_length=100, null=True, blank=False
+    )  # Here Complaint given by user cannot be NULL!
     date = models.DateField(auto_now=True)
 
 
@@ -44,14 +49,13 @@ class Stock(models.Model):
     threshold = models.IntegerField(default=10)
     # generic_name = models.CharField(max_length=80)
 
-
     def __str__(self):
         return self.medicine_name
 
 
 class Medicine(models.Model):
-    patient = models.ForeignKey(ExtraInfo,on_delete=models.CASCADE)
-    medicine_id = models.ForeignKey(Stock,on_delete=models.CASCADE)
+    patient = models.ForeignKey(ExtraInfo, on_delete=models.CASCADE)
+    medicine_id = models.ForeignKey(Stock, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
     days = models.IntegerField(default=0)
     times = models.IntegerField(default=0)
@@ -59,68 +63,80 @@ class Medicine(models.Model):
     def __str__(self):
         return self.medicine_id
 
+
 class Hospital(models.Model):
-    hospital_name=models.CharField(max_length=100)
-    phone=models.CharField(max_length=10)
+    hospital_name = models.CharField(max_length=100)
+    phone = models.CharField(max_length=10)
+
     def __str__(self):
         return self.hospital_name
 
- 
+
 class Expiry(models.Model):
-    medicine_id=models.ForeignKey(Stock,on_delete=models.CASCADE)
+    medicine_id = models.ForeignKey(Stock, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
-    supplier=models.CharField(max_length=50)
-    expiry_date=models.DateField()
-    returned=models.BooleanField(default=False)
-    return_date=models.DateField(null=True,blank=True)
-    date=models.DateField(auto_now=True)
+    supplier = models.CharField(max_length=50)
+    expiry_date = models.DateField()
+    returned = models.BooleanField(default=False)
+    return_date = models.DateField(null=True, blank=True)
+    date = models.DateField(auto_now=True)
+
     def __str__(self):
         return self.medicine_id.medicine_name
 
+
 class Schedule(models.Model):
-    doctor_id = models.ForeignKey(Doctor,on_delete=models.CASCADE)
+    doctor_id = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     day = models.IntegerField(choices=Constants.DAYS_OF_WEEK)
-    from_time = models.TimeField(null=True,blank=True)
-    to_time = models.TimeField(null=True,blank=True)
+    from_time = models.TimeField(null=True, blank=True)
+    to_time = models.TimeField(null=True, blank=True)
     room = models.IntegerField()
     date = models.DateField(auto_now=True)
 
 
 class Counter(models.Model):
-    count=models.IntegerField(default=0)
-    fine=models.IntegerField(default=0)
-    doc_count=models.IntegerField(default=0)
+    count = models.IntegerField(default=0)
+    fine = models.IntegerField(default=0)
+    doc_count = models.IntegerField(default=0)
 
     def doctor_count(self):
-        self.doc_count+=1
-        return ""
-    def increment(self):
-        self.count+=1
-        return ""
-    def increment_fine(self):
-        self.fine+=1
-        return ""
-    def range_count(self):
-        if self.count==0:
-            dif=0
-        elif self.count<=4:
-            dif=self.doc_count-self.count
-        else:
-            dif=self.count-self.doc_count
-        return range(dif)
-    def empty_fine(self):
-        self.count=0
-        self.fine=0
-        return ""
-    def empty_count(self):
-        self.count=0
+        self.doc_count += 1
         return ""
 
+    def increment(self):
+        self.count += 1
+        return ""
+
+    def increment_fine(self):
+        self.fine += 1
+        return ""
+
+    def range_count(self):
+        if self.count == 0:
+            dif = 0
+        elif self.count <= 4:
+            dif = self.doc_count - self.count
+        else:
+            dif = self.count - self.doc_count
+        return range(dif)
+
+    def empty_fine(self):
+        self.count = 0
+        self.fine = 0
+        return ""
+
+    def empty_count(self):
+        self.count = 0
+        return ""
+
+
 class Appointment(models.Model):
-    user_id = models.ForeignKey(ExtraInfo,on_delete=models.CASCADE)
-    doctor_id = models.ForeignKey(Doctor,on_delete=models.CASCADE)
+    user_id = models.ForeignKey(ExtraInfo, on_delete=models.CASCADE)
+    doctor_id = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     description = models.CharField(max_length=50)
-    schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE,null=True, blank=True)
+    schedule = models.ForeignKey(
+        Schedule, on_delete=models.CASCADE, null=True, blank=True
+    )
     date = models.DateField()
 
     def __str__(self):
@@ -128,20 +144,24 @@ class Appointment(models.Model):
 
 
 class Prescription(models.Model):
-    user_id = models.ForeignKey(ExtraInfo,on_delete=models.CASCADE)
-    doctor_id = models.ForeignKey(Doctor, on_delete=models.CASCADE,null=True, blank=True)
+    user_id = models.ForeignKey(ExtraInfo, on_delete=models.CASCADE)
+    doctor_id = models.ForeignKey(
+        Doctor, on_delete=models.CASCADE, null=True, blank=True
+    )
     details = models.CharField(max_length=100)
     date = models.DateField()
     test = models.CharField(max_length=200, null=True, blank=True)
-    appointment = models.ForeignKey(Appointment, on_delete=models.CASCADE,null=True, blank=True)
+    appointment = models.ForeignKey(
+        Appointment, on_delete=models.CASCADE, null=True, blank=True
+    )
 
     def __str__(self):
         return self.details
 
 
 class Prescribed_medicine(models.Model):
-    prescription_id = models.ForeignKey(Prescription,on_delete=models.CASCADE)
-    medicine_id = models.ForeignKey(Stock,on_delete=models.CASCADE)
+    prescription_id = models.ForeignKey(Prescription, on_delete=models.CASCADE)
+    medicine_id = models.ForeignKey(Stock, on_delete=models.CASCADE)
     quantity = models.IntegerField(default=0)
     days = models.IntegerField(default=0)
     times = models.IntegerField(default=0)
@@ -151,17 +171,20 @@ class Prescribed_medicine(models.Model):
 
 
 class Ambulance_request(models.Model):
-    user_id = models.ForeignKey(ExtraInfo,on_delete=models.CASCADE)
+    user_id = models.ForeignKey(ExtraInfo, on_delete=models.CASCADE)
     date_request = models.DateTimeField()
     start_date = models.DateField()
     end_date = models.DateField(null=True, blank=True)
     reason = models.CharField(max_length=50)
 
+
 class Hospital_admit(models.Model):
-    user_id = models.ForeignKey(ExtraInfo,on_delete=models.CASCADE)
-    doctor_id = models.ForeignKey(Doctor, on_delete=models.CASCADE,null=True, blank=True)
+    user_id = models.ForeignKey(ExtraInfo, on_delete=models.CASCADE)
+    doctor_id = models.ForeignKey(
+        Doctor, on_delete=models.CASCADE, null=True, blank=True
+    )
     hospital_doctor = models.CharField(max_length=100)
-    hospital_name = models.ForeignKey(Hospital,on_delete=models.CASCADE)
+    hospital_name = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     admission_date = models.DateField()
     discharge_date = models.DateField(null=True, blank=True)
     reason = models.CharField(max_length=50)

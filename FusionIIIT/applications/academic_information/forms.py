@@ -14,9 +14,13 @@ class MinuteForm(forms.ModelForm):
         widgets - defining the id, required and placeholder of the filed in the form
 
     """
+
     class Meta:
         model = Meeting
-        fields = ('date', 'minutes_file', )
+        fields = (
+            "date",
+            "minutes_file",
+        )
 
 
 class AcademicTimetableForm(forms.ModelForm):
@@ -30,9 +34,10 @@ class AcademicTimetableForm(forms.ModelForm):
         widgets - defining the id, required and placeholder of the filed in the form
 
     """
+
     class Meta:
         model = Timetable
-        fields = ('programme', 'batch', 'branch', 'time_table')
+        fields = ("programme", "batch", "branch", "time_table")
 
 
 class ExamTimetableForm(forms.ModelForm):
@@ -46,6 +51,10 @@ class ExamTimetableForm(forms.ModelForm):
         widgets - defining the id, required and placeholder of the filed in the form
 
     """
+
     class Meta:
         model = Exam_timetable
-        fields = ('programme', 'exam_time_table',)
+        fields = (
+            "programme",
+            "exam_time_table",
+        )

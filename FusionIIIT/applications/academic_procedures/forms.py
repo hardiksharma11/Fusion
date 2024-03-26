@@ -16,10 +16,13 @@ class AddDropCourseForm(forms.ModelForm):
         fields = ('course_id', 'course_name', 'sem', 'credits', 'courses')
 
 """
+
+
 class BranchChangeForm(forms.ModelForm):
     class Meta:
-        model=BranchChange
-        fields=('branches',)
+        model = BranchChange
+        fields = ("branches",)
+
 
 # class AssistantshipClaimForm(forms.ModelForm):
 #     class Meta:

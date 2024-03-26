@@ -13,20 +13,23 @@ from .models import LeaveMigration
 def execute_leave_migrations():
     today = timezone.now().date()
     # today = timezone.now()
-    migrations = LeaveMigration.objects.filter(Q(on_date__lte=today)).order_by('on_date')
+    migrations = LeaveMigration.objects.filter(Q(on_date__lte=today)).order_by(
+        "on_date"
+    )
 
     for migration in migrations:
-        if migration.type_migration == 'transfer':
+        if migration.type_migration == "transfer":
             to_update = migration.replacer
         else:
             to_update = migration.replacee
         rep_type = migration.replacement_type
-        migration.replacee.holds_designations.filter(Q(designation__type=rep_type)) \
-                                             .update(working=to_update)
+        migration.replacee.holds_designations.filter(
+            Q(designation__type=rep_type)
+        ).update(working=to_update)
 
     migrations.delete()
 
 
 @celery.task()
 def testing(a, b):
-    return a+b
+    return a + b

@@ -159,4 +159,3 @@ class ExtensionOfTimeDetails(models.Model):
 class NoOfTechnicalBidTimes(models.Model):
     key = models.ForeignKey(Projects, on_delete=models.CASCADE, unique=True)
     number = models.IntegerField()
-
