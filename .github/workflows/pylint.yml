@@ -24,4 +24,4 @@ jobs:
           
     - name: Analysing the code with pylint
       run: |
-        pylint $(git ls-files '*.py') --ignore-file ${{matrix.suite}}
+        pylint $(git ls-files '*.py') --ignore-paths ${{matrix.suite}}
